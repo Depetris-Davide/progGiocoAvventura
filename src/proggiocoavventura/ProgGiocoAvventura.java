@@ -25,6 +25,7 @@ public class ProgGiocoAvventura extends JFrame {
         exit = new JButton("Esci");
         panel = new GamePanel();
 
+        frame.setResizable(false);
         frame.setBounds(110, 20, 1315, 787);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setBackground(Color.black);

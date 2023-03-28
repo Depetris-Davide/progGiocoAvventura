@@ -54,7 +54,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
         creaMondo("mondo" + mondoY + "-" + mondoX + ".txt");
-        System.out.println("creato");
 
         startGameThread();
     }
@@ -117,11 +116,11 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         if (mondo[papa.posY][papa.posX].terreno.equals("acqua")) {
+            papa.posX = 11;
+            papa.posY = 6;
             creaMondo("mondo0-0.txt");
             mondoX = 0;
             mondoY = 0;
-            papa.posX = 11;
-            papa.posY = 6;
         }
     }
 
@@ -178,7 +177,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void creaMondo(String cambiaMondo) throws FileNotFoundException, IOException {
         BufferedReader filein = new BufferedReader(new FileReader(cambiaMondo));
-        System.out.println("creato " + cambiaMondo);
         String s;
 
         for (int i = 0; i < mondoSizeY; i++) {

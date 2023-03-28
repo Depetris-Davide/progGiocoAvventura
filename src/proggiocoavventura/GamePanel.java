@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -95,7 +93,6 @@ public class GamePanel extends JPanel implements Runnable {
             papa.posX -= 1;
             keyH.left = false;
         }
-
         if (papa.posX >= mondoSizeX) {
             mondoX++;
             nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
@@ -107,8 +104,22 @@ public class GamePanel extends JPanel implements Runnable {
             creaMondo(nuovoMondo);
             papa.posX = mondoSizeX - 1;
         }
+        if (papa.posY >= mondoSizeY) {
+            mondoY++;
+            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+            creaMondo(nuovoMondo);
+            papa.posY = 0;
+        } else if (papa.posY < 0) {
+            mondoY--;
+            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+            creaMondo(nuovoMondo);
+            papa.posY = mondoSizeY - 1;
+        }
 
         if (mondo[papa.posY][papa.posX].terreno.equals("acqua")) {
+            creaMondo("mondo0-0.txt");
+            mondoX = 0;
+            mondoY = 0;
             papa.posX = 11;
             papa.posY = 6;
         }

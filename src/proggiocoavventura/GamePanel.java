@@ -178,6 +178,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void creaMondo(String cambiaMondo) throws FileNotFoundException, IOException {
         BufferedReader filein = new BufferedReader(new FileReader(cambiaMondo));
         String s;
+        System.out.println(cambiaMondo);
 
         for (int i = 0; i < mondoSizeY; i++) {
             for (int j = 0; j < mondoSizeX; j++) {

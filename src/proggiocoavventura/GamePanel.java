@@ -8,26 +8,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
     Personaggio papa;
+    Nemico prova;
     Thread gameThread;
     KeyHandler keyH;
     int mondoSizeX, mondoSizeY;
     Piattaforma[][] mondo;
     String nuovoMondo;
     int mondoX = 0, mondoY = 0;
-
+    ArrayList<String> risposte = new ArrayList<String>();
     JButton stat;
     JPanel statPanel;
     JLabel livello = new JLabel();
 
     GamePanel() throws IOException {
+        risposte.add("4");
+        risposte.add("6");
         mondoSizeX = 26;
         mondoSizeY = 14;
         papa = new Personaggio(11, 6);
+        prova = new Nemico("erba","Quanto fa 2+2?",risposte,11,7);
         keyH = new KeyHandler();
         mondo = new Piattaforma[mondoSizeY][mondoSizeX];
         stat = new JButton("Statistiche");
@@ -122,6 +127,13 @@ public class GamePanel extends JPanel implements Runnable {
             mondoX = 0;
             mondoY = 0;
         }
+        
+        if((prova.posX + 1 == papa.posX || prova.posX-1 == papa.posX) && prova.posY == papa.posY
+            ||
+            (prova.posY + 1 == papa.posY || prova.posY-1 == papa.posY) && prova.posX == papa.posX){
+            System.out.println("Collisione");
+        }
+        
     }
 
     public void paintComponent(Graphics g) {
@@ -156,6 +168,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
         g.fillRect((papa.posX * 50) + 5, (papa.posY * 50) + 5, papa.size, papa.size);
+        g.setColor(Color.red);
+        g.fillRect((prova.posX * 50) + 5, (prova.posY * 50) + 5, prova.size,prova.size );
     }
 
     public void creaStatPanel() {

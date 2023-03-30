@@ -4,6 +4,7 @@
  */
 package proggiocoavventura;
 
+import java.util.ArrayList;
 import javax.swing.JLabel;
 
 /**
@@ -16,12 +17,12 @@ public class Nemico extends JLabel {
     int posX, posY;
     int size;
     String domanda;
-    String[] risposte;
+    ArrayList<String> risposte;
     String terreno;
     
     //ImageIcon player;
 
-    Nemico(String terreno,String domanda,String[] risposte,int posX, int posY) {
+    Nemico(String terreno,String domanda,ArrayList<String> risposte,int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
         this.terreno = terreno;

@@ -25,14 +25,18 @@ public class GamePanel extends JPanel implements Runnable {
     JButton stat;
     JPanel statPanel;
     JLabel livello = new JLabel();
+    JPanel domandaBG = new JPanel();
+    JLabel domandaText = new JLabel();
 
     GamePanel() throws IOException {
+        domandaBG.setBounds(0, 0, 1300, 200);
+        domandaText.setBounds(0, 0, 1300, 150);
         risposte.add("4");
         risposte.add("6");
         mondoSizeX = 26;
         mondoSizeY = 14;
         papa = new Personaggio(11, 6);
-        prova = new Nemico("erba","Quanto fa 2+2?",risposte,11,7);
+        prova = new Nemico("Quanto fa 14-7+2?", risposte, 11, 7);
         keyH = new KeyHandler();
         mondo = new Piattaforma[mondoSizeY][mondoSizeX];
         stat = new JButton("Statistiche");
@@ -83,19 +87,15 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (keyH.up) {
             papa.posY -= 1;
-            keyH.up = false;
         }
         if (keyH.right) {
             papa.posX += 1;
-            keyH.right = false;
         }
         if (keyH.down) {
             papa.posY += 1;
-            keyH.down = false;
         }
         if (keyH.left) {
             papa.posX -= 1;
-            keyH.left = false;
         }
         if (papa.posX >= mondoSizeX) {
             mondoX++;
@@ -127,13 +127,36 @@ public class GamePanel extends JPanel implements Runnable {
             mondoX = 0;
             mondoY = 0;
         }
-        
-        if((prova.posX + 1 == papa.posX || prova.posX-1 == papa.posX) && prova.posY == papa.posY
-            ||
-            (prova.posY + 1 == papa.posY || prova.posY-1 == papa.posY) && prova.posX == papa.posX){
-            System.out.println("Collisione");
+
+        if (papa.posX == prova.posX && papa.posY == prova.posY) {
+            if (keyH.right) {
+                papa.posX -= 1;
+            }
+            if (keyH.up) {
+                papa.posY += 1;
+            }
+            if (keyH.left) {
+                papa.posX += 1;
+            }
+            if (keyH.down) {
+                papa.posY -= 1;
+            }
+            domanda();
+            System.out.println("collisione");
         }
-        
+
+        if (keyH.up) {
+            keyH.up = false;
+        }
+        if (keyH.right) {
+            keyH.right = false;
+        }
+        if (keyH.down) {
+            keyH.down = false;
+        }
+        if (keyH.left) {
+            keyH.left = false;
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -169,7 +192,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
         g.fillRect((papa.posX * 50) + 5, (papa.posY * 50) + 5, papa.size, papa.size);
         g.setColor(Color.red);
-        g.fillRect((prova.posX * 50) + 5, (prova.posY * 50) + 5, prova.size,prova.size );
+        g.fillRect((prova.posX * 50) + 5, (prova.posY * 50) + 5, prova.size, prova.size);
     }
 
     public void creaStatPanel() {
@@ -200,6 +223,14 @@ public class GamePanel extends JPanel implements Runnable {
                 mondo[i][j] = new Piattaforma(s, i, j);
             }
         }
+    }
+
+    public void domanda() {
+        if (papa.livello >= 1 && papa.livello <= 5) {
+            domandaText.setText(prova.domanda);
+        }
+        domandaBG.add(domandaText);
+        this.add(domandaBG);
     }
 
 }

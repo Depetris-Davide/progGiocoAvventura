@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.*;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class ProgGiocoAvventura extends JFrame {
 
@@ -26,7 +25,7 @@ public class ProgGiocoAvventura extends JFrame {
         panel = new GamePanel();
 
         frame.setResizable(false);
-        frame.setBounds(110, 20, 1315, 787);
+        frame.setBounds(110, 20, 1305, 777);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setBackground(Color.black);
 

@@ -90,6 +90,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (keyH.up) {
             papa.posY -= 1;
+            for (Nemico nemico : nemici) {
+                if (papa.posX == nemico.posX && papa.posY == nemico.posY) {
+                    papa.posY += 1;
+                }
+                domanda(nemico);
+            }
         }
         if (keyH.right) {
             papa.posX += 1;
@@ -129,29 +135,6 @@ public class GamePanel extends JPanel implements Runnable {
             creaMondo(0, 0);
             mondoX = 0;
             mondoY = 0;
-        }
-
-        for (Nemico nemico : nemici) {
-            if (papa.posX == nemico.posX && papa.posY == nemico.posY) {
-                if (keyH.right) {
-                    papa.posX -= 1;
-                }
-                if (keyH.up) {
-                    papa.posY += 1;
-                }
-                if (keyH.left) {
-                    papa.posX += 1;
-                }
-                if (keyH.down) {
-                    papa.posY -= 1;
-                }
-                domanda(nemico);
-                System.out.println("collisione");
-            }
-        }
-
-        if (keyH.up) {
-            keyH.up = false;
         }
         if (keyH.right) {
             keyH.right = false;
@@ -267,7 +250,7 @@ public class GamePanel extends JPanel implements Runnable {
                 s = fileinNemico.readLine();
                 if (s != null) {
                     tok = s.split("\\®");
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i < 5; i++) {
                         switch (i) {
                             case 0:
                                 System.out.println(tok[0]);
@@ -281,11 +264,13 @@ public class GamePanel extends JPanel implements Runnable {
                                 }
                                 break;
                             case 2:
-                                System.out.println(tok[1]);
-                                posX = Integer.parseInt(tok[2]);
                                 break;
                             case 3:
-                                posY = Integer.parseInt(tok[3]);
+                                System.out.println(tok[4]);
+                                posX = Integer.parseInt(tok[3]);
+                                break;
+                            case 4:
+                                posY = Integer.parseInt(tok[4]);
                                 break;
                         }
                     }

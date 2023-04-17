@@ -7,6 +7,7 @@ public class Personaggio extends JLabel {
     int livello;
     int posX, posY;
     int size;
+    boolean mov;
     //ImageIcon player;
 
     Personaggio(int posX, int posY) {
@@ -14,6 +15,7 @@ public class Personaggio extends JLabel {
         this.posY = posY;
         size = 40;
         livello = 1;
+        mov = true;
         //player = new ImageIcon("player.png");
     }
 }

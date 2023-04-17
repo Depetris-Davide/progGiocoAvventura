@@ -16,6 +16,9 @@ import javax.swing.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
+    ArrayList<String> risposteTemp = new ArrayList<String>();
+    ArrayList<Boolean> risposteCTemp = new ArrayList<Boolean>();
+
     Personaggio papa;
     LinkedList<Nemico> nemici;
     Thread gameThread;
@@ -30,8 +33,13 @@ public class GamePanel extends JPanel implements Runnable {
     JLabel livello = new JLabel();
     JPanel domandaBG = new JPanel();
     JLabel domandaText = new JLabel();
+    LinkedList<JButton> rispostePuls;
+    LinkedList<Boolean> risposteC;
 
     GamePanel() throws IOException {
+        rispostePuls = new LinkedList<JButton>();
+        risposteC = new LinkedList<Boolean>();
+
         nemici = new LinkedList<Nemico>();
         domandaBG.setBounds(0, 0, 1300, 200);
         domandaText.setBounds(0, 0, 1300, 150);
@@ -87,24 +95,65 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() throws IOException {
+        boolean trov = false;
+        if (papa.mov) {
+            if (keyH.up) {
+                papa.posY -= 1;
+                for (int i = 0; i < nemici.size() && !trov; i++) {
+                    if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
+                        papa.posY += 1;
+                        trov = true;
+                        domanda(nemici.get(i));
+                        papa.mov = false;
+                    }
 
-        if (keyH.up) {
-            papa.posY -= 1;
-            for (Nemico nemico : nemici) {
-                if (papa.posX == nemico.posX && papa.posY == nemico.posY) {
-                    papa.posY += 1;
                 }
-                domanda(nemico);
+
+                trov = false;
+                keyH.up = false;
             }
-        }
-        if (keyH.right) {
-            papa.posX += 1;
-        }
-        if (keyH.down) {
-            papa.posY += 1;
-        }
-        if (keyH.left) {
-            papa.posX -= 1;
+            if (keyH.right) {
+                papa.posX += 1;
+                for (int i = 0; i < nemici.size() && !trov; i++) {
+                    if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
+                        papa.posX -= 1;
+                        trov = true;
+                        domanda(nemici.get(i));
+                        papa.mov = false;
+                    }
+                }
+
+                trov = false;
+                keyH.right = false;
+            }
+            if (keyH.down) {
+                papa.posY += 1;
+                for (int i = 0; i < nemici.size() && !trov; i++) {
+                    if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
+                        papa.posY -= 1;
+                        trov = true;
+                        domanda(nemici.get(i));
+                        papa.mov = false;
+                    }
+                }
+
+                trov = false;
+                keyH.down = false;
+            }
+            if (keyH.left) {
+                papa.posX -= 1;
+                for (int i = 0; i < nemici.size() && !trov; i++) {
+                    if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
+                        papa.posX += 1;
+                        trov = true;
+                        domanda(nemici.get(i));
+                        papa.mov = false;
+                    }
+                }
+
+                trov = false;
+                keyH.left = false;
+            }
         }
         if (papa.posX >= mondoSizeX) {
             mondoX++;
@@ -136,15 +185,13 @@ public class GamePanel extends JPanel implements Runnable {
             mondoX = 0;
             mondoY = 0;
         }
-        if (keyH.right) {
-            keyH.right = false;
+        
+        for(int i = 0; i < nemici.size() && !trov; i++) {
+            if(nemici.get(i).dead){
+                nemici.remove(i);
+            }
         }
-        if (keyH.down) {
-            keyH.down = false;
-        }
-        if (keyH.left) {
-            keyH.left = false;
-        }
+        trov = false;
     }
 
     public void paintComponent(Graphics g) {
@@ -181,7 +228,7 @@ public class GamePanel extends JPanel implements Runnable {
         g.fillRect((papa.posX * 50) + 5, (papa.posY * 50) + 5, papa.size, papa.size);
         g.setColor(Color.red);
         for (Nemico nemico : nemici) {
-            g.fillRect((nemico.posX * 50) + 5, (nemico.posY * 50) + 5, nemico.size, nemico.size);
+                g.fillRect((nemico.posX * 50) + 5, (nemico.posY * 50) + 5, nemico.size, nemico.size);
         }
     }
 
@@ -204,6 +251,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void creaMondo(int MondoY, int MondoX) throws IOException {
         boolean errNem = false, errMondo = false;
+        String s = "";
+        String[] tok;
+        String[] tokRisp;
+        boolean risp;
+        String domanda = "";
 
         BufferedReader fileinMondo = null;
         try {
@@ -218,17 +270,13 @@ public class GamePanel extends JPanel implements Runnable {
             errNem = true;
         }
 
-        String s = "";
-        String[] tok;
-        String[] tokRisp;
-
-        String domanda = "";
-        ArrayList<String> risposteTemp = new ArrayList<String>();
         int posX = 0, posY = 0;
 
-        if (nemici != null) {
+        if (!nemici.isEmpty()) {
             nemici.clear();
+
         }
+
         if (!errMondo) {
             for (int i = 0; i < mondoSizeY; i++) {
                 for (int j = 0; j < mondoSizeX; j++) {
@@ -251,22 +299,26 @@ public class GamePanel extends JPanel implements Runnable {
                 if (s != null) {
                     tok = s.split("\\®");
                     for (int i = 0; i < 5; i++) {
+
                         switch (i) {
                             case 0:
-                                System.out.println(tok[0]);
                                 domanda = tok[0];
                                 break;
                             case 1:
-                                System.out.println(tok[1]);
                                 tokRisp = tok[1].split("\\|");
                                 for (String singRisp : tokRisp) {
                                     risposteTemp.add(singRisp);
                                 }
                                 break;
                             case 2:
+                                tokRisp = tok[2].split("\\|");
+
+                                for (String singRisp : tokRisp) {
+                                    risp = Boolean.parseBoolean(singRisp);
+                                    risposteCTemp.add(risp);
+                                }
                                 break;
                             case 3:
-                                System.out.println(tok[4]);
                                 posX = Integer.parseInt(tok[3]);
                                 break;
                             case 4:
@@ -274,7 +326,8 @@ public class GamePanel extends JPanel implements Runnable {
                                 break;
                         }
                     }
-                    nemici.add(new Nemico(domanda, risposteTemp, posX, posY));
+                    nemici.add(new Nemico(domanda, risposteTemp, risposteCTemp, posX, posY, domandaBG, papa));
+                    risposteTemp.clear();
                 }
             } while (s != null);
             fileinNemico.close();
@@ -283,10 +336,22 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void domanda(Nemico nemico) {
+        if (!rispostePuls.isEmpty()) {
+            rispostePuls.clear();
+        }
+
+        for (int i = 0; i < nemico.pulsanti.size(); i++) {
+            rispostePuls.add(nemico.pulsanti.get(i));
+            rispostePuls.get(i).setBounds(110 * i + 500, 50, 100, 50);
+            domandaBG.add(rispostePuls.get(i));
+        }
+
         if (papa.livello >= 1 && papa.livello <= 5) {
             domandaText.setText(nemico.domanda);
         }
         domandaBG.add(domandaText);
+        domandaBG.setVisible(true);
+
         this.add(domandaBG);
     }
 

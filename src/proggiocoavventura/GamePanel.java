@@ -99,6 +99,11 @@ public class GamePanel extends JPanel implements Runnable {
         if (papa.mov) {
             if (keyH.up) {
                 papa.posY -= 1;
+                if ((papa.posY < mondoSizeY && papa.posY >= 0) && (papa.posX < mondoSizeX && papa.posX >= 0)) {
+                    if (mondo[papa.posY][papa.posX].terreno.equals("muro")) {
+                        papa.posY += 1;
+                    }
+                }
                 for (int i = 0; i < nemici.size() && !trov; i++) {
                     if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
                         papa.posY += 1;
@@ -114,6 +119,11 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (keyH.right) {
                 papa.posX += 1;
+                if ((papa.posY < mondoSizeY && papa.posY >= 0) && (papa.posX < mondoSizeX && papa.posX >= 0)) {
+                    if (mondo[papa.posY][papa.posX].terreno.equals("muro")) {
+                        papa.posX -= 1;
+                    }
+                }
                 for (int i = 0; i < nemici.size() && !trov; i++) {
                     if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
                         papa.posX -= 1;
@@ -128,6 +138,12 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (keyH.down) {
                 papa.posY += 1;
+                if ((papa.posY < mondoSizeY && papa.posY >= 0) && (papa.posX < mondoSizeX && papa.posX >= 0)) {
+                    if (mondo[papa.posY][papa.posX].terreno.equals("muro")) {
+                        papa.posY -= 1;
+                    }
+
+                }
                 for (int i = 0; i < nemici.size() && !trov; i++) {
                     if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
                         papa.posY -= 1;
@@ -142,6 +158,11 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (keyH.left) {
                 papa.posX -= 1;
+                if ((papa.posY < mondoSizeY && papa.posY >= 0) && (papa.posX < mondoSizeX && papa.posX >= 0)) {
+                    if (mondo[papa.posY][papa.posX].terreno.equals("muro")) {
+                        papa.posX += 1;
+                    }
+                }
                 for (int i = 0; i < nemici.size() && !trov; i++) {
                     if (papa.posX == nemici.get(i).posX && papa.posY == nemici.get(i).posY) {
                         papa.posX += 1;
@@ -185,9 +206,9 @@ public class GamePanel extends JPanel implements Runnable {
             mondoX = 0;
             mondoY = 0;
         }
-        
-        for(int i = 0; i < nemici.size() && !trov; i++) {
-            if(nemici.get(i).dead){
+
+        for (int i = 0; i < nemici.size() && !trov; i++) {
+            if (nemici.get(i).dead) {
                 nemici.remove(i);
             }
         }
@@ -218,7 +239,9 @@ public class GamePanel extends JPanel implements Runnable {
                     case "terra":
                         g.setColor(new Color(155, 90, 60));
                         break;
-
+                    case "muro":
+                        g.setColor(new Color(90, 90, 90));
+                        break;
                 }
                 g.fillRect(mondo[i][j].posY * mondo[i][j].size, mondo[i][j].posX * mondo[i][j].size, mondo[i][j].size, mondo[i][j].size);
                 g.setColor(Color.black);
@@ -228,7 +251,7 @@ public class GamePanel extends JPanel implements Runnable {
         g.fillRect((papa.posX * 50) + 5, (papa.posY * 50) + 5, papa.size, papa.size);
         g.setColor(Color.red);
         for (Nemico nemico : nemici) {
-                g.fillRect((nemico.posX * 50) + 5, (nemico.posY * 50) + 5, nemico.size, nemico.size);
+            g.fillRect((nemico.posX * 50) + 5, (nemico.posY * 50) + 5, nemico.size, nemico.size);
         }
     }
 

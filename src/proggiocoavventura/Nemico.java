@@ -9,12 +9,11 @@ import javax.swing.JPanel;
 
 public class Nemico extends JLabel {
 
-    int livello;
     int posX, posY;
     int size;
     String domanda;
     ArrayList<JButton> pulsanti;
-    ArrayList <Boolean> risposteCo;
+    ArrayList<Boolean> risposteCo;
     boolean dead;
 
     //ImageIcon player;
@@ -24,7 +23,7 @@ public class Nemico extends JLabel {
         this.posY = posY;
         this.domanda = domanda;
         risposteCo = new ArrayList<Boolean>();
-        for(Boolean rispostaC : risposteC) {
+        for (Boolean rispostaC : risposteC) {
             risposteCo.add(rispostaC);
         }
         int i = 0;
@@ -36,10 +35,12 @@ public class Nemico extends JLabel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (risposteCo.get(k)) {
-                        System.out.println("RISPOSTA GIUSTA UWUWUWU");
+                        pers.indovinate += 1;
                         pannello.removeAll();
                         dead = true;
                         pannello.setVisible(false);
+                    } else {
+                        pers.errori += 1;
                     }
                     pers.mov = true;
                 }

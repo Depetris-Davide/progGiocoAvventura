@@ -4,20 +4,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
     ArrayList<String> risposteTemp = new ArrayList<String>();
     ArrayList<Boolean> risposteCTemp = new ArrayList<Boolean>();
+
+    boolean tesoro = false;
 
     Personaggio papa;
     LinkedList<Nemico> nemici;
@@ -30,7 +29,10 @@ public class GamePanel extends JPanel implements Runnable {
     ArrayList<String> risposte = new ArrayList<String>();
     JButton stat;
     JPanel statPanel;
+
     JLabel livello = new JLabel();
+    JLabel errori = new JLabel();
+
     JPanel domandaBG = new JPanel();
     JLabel domandaText = new JLabel();
     LinkedList<JButton> rispostePuls;
@@ -42,9 +44,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         nemici = new LinkedList<Nemico>();
         domandaBG.setBounds(0, 0, 1300, 200);
-        domandaText.setBounds(0, 0, 1300, 150);
-        risposte.add("4");
-        risposte.add("6");
+        domandaBG.setLayout(null);
+        domandaText.setSize(1300, 100);
         mondoSizeX = 26;
         mondoSizeY = 14;
         papa = new Personaggio(11, 6);
@@ -54,16 +55,18 @@ public class GamePanel extends JPanel implements Runnable {
 
         creaStatPanel();
 
-        stat.setBounds(100, 700, 400, 50);
+        stat.setBounds(0, 700, 400, 50);
         stat.setFocusable(false);
         stat.setFont(new Font("Gill Sans MT", Font.BOLD, 20));
         stat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent E) {
-                setStatPanel();
-                if (statPanel.isVisible()) {
-                    statPanel.setVisible(false);
-                } else {
-                    statPanel.setVisible(true);
+                if (papa.mov) {
+                    setStatPanel();
+                    if (statPanel.isVisible()) {
+                        statPanel.setVisible(false);
+                    } else {
+                        statPanel.setVisible(true);
+                    }
                 }
             }
         });
@@ -96,6 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() throws IOException {
         boolean trov = false;
+
         if (papa.mov) {
             if (keyH.up) {
                 papa.posY -= 1;
@@ -175,44 +179,49 @@ public class GamePanel extends JPanel implements Runnable {
                 trov = false;
                 keyH.left = false;
             }
-        }
-        if (papa.posX >= mondoSizeX) {
-            mondoX++;
-            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
-            creaMondo(mondoY, mondoX);
-            papa.posX = 0;
-        } else if (papa.posX < 0) {
-            mondoX--;
-            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
-            creaMondo(mondoY, mondoX);
-            papa.posX = mondoSizeX - 1;
-        }
-        if (papa.posY >= mondoSizeY) {
-            mondoY++;
-            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
-            creaMondo(mondoY, mondoX);
-            papa.posY = 0;
-        } else if (papa.posY < 0) {
-            mondoY--;
-            nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
-            creaMondo(mondoY, mondoX);
-            papa.posY = mondoSizeY - 1;
-        }
 
-        if (mondo[papa.posY][papa.posX].terreno.equals("acqua")) {
-            papa.posX = 11;
-            papa.posY = 6;
-            creaMondo(0, 0);
-            mondoX = 0;
-            mondoY = 0;
-        }
+            if (papa.posX >= mondoSizeX) {
+                mondoX++;
+                nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+                creaMondo(mondoY, mondoX);
+                papa.posX = 0;
+            } else if (papa.posX < 0) {
+                mondoX--;
+                nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+                creaMondo(mondoY, mondoX);
+                papa.posX = mondoSizeX - 1;
+            }
+            if (papa.posY >= mondoSizeY) {
+                mondoY++;
+                nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+                creaMondo(mondoY, mondoX);
+                papa.posY = 0;
+            } else if (papa.posY < 0) {
+                mondoY--;
+                nuovoMondo = "mondo" + mondoY + "-" + mondoX + ".txt";
+                creaMondo(mondoY, mondoX);
+                papa.posY = mondoSizeY - 1;
+            }
 
-        for (int i = 0; i < nemici.size() && !trov; i++) {
-            if (nemici.get(i).dead) {
-                nemici.remove(i);
+            if (mondo[papa.posY][papa.posX].terreno.equals("acqua")) {
+                papa.posX = 11;
+                papa.posY = 6;
+                creaMondo(0, 0);
+                mondoX = 0;
+                mondoY = 0;
+            }
+
+            for (int i = 0; i < nemici.size() && !trov; i++) {
+                if (nemici.get(i).dead) {
+                    nemici.remove(i);
+                }
+            }
+            trov = false;
+
+            if (papa.indovinate >= 10) {
+                System.out.println("TROVA IL TESORO");
             }
         }
-        trov = false;
     }
 
     public void paintComponent(Graphics g) {
@@ -253,23 +262,33 @@ public class GamePanel extends JPanel implements Runnable {
         for (Nemico nemico : nemici) {
             g.fillRect((nemico.posX * 50) + 5, (nemico.posY * 50) + 5, nemico.size, nemico.size);
         }
+
     }
 
     public void creaStatPanel() {
         statPanel = new JPanel();
-        statPanel.setBounds(0, 0, 400, 400);
+        statPanel.setLayout(null);
+        statPanel.setBounds(0, 0, 400, 200);
         statPanel.setVisible(false);
 
-        livello.setText("Livello: " + papa.livello);
+        livello.setText("Livello: " + papa.indovinate);
         livello.setFont(new Font("Gill Sans MT", Font.BOLD, 20));
+        livello.setHorizontalAlignment(JLabel.CENTER);
         livello.setBounds(0, 0, 400, 50);
-        livello.setBackground(Color.yellow);
         livello.setOpaque(true);
         statPanel.add(livello);
+
+        errori.setText("Indovinate: " + papa.errori);
+        errori.setFont(new Font("Gill Sans MT", Font.BOLD, 20));
+        errori.setHorizontalAlignment(JLabel.CENTER);
+        errori.setBounds(0, 100, 400, 50);
+        errori.setOpaque(true);
+        statPanel.add(errori);
     }
 
     public void setStatPanel() {
-        livello.setText("Livello: " + papa.livello);
+        livello.setText("Indovinate: " + papa.indovinate);
+        errori.setText("Errori: " + papa.errori);
     }
 
     public void creaMondo(int MondoY, int MondoX) throws IOException {
@@ -297,7 +316,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (!nemici.isEmpty()) {
             nemici.clear();
-
         }
 
         if (!errMondo) {
@@ -320,15 +338,15 @@ public class GamePanel extends JPanel implements Runnable {
             do {
                 s = fileinNemico.readLine();
                 if (s != null) {
-                    tok = s.split("\\®");
+                    tok = s.split("#");
                     for (int i = 0; i < 5; i++) {
-
                         switch (i) {
                             case 0:
                                 domanda = tok[0];
                                 break;
                             case 1:
                                 tokRisp = tok[1].split("\\|");
+
                                 for (String singRisp : tokRisp) {
                                     risposteTemp.add(singRisp);
                                 }
@@ -360,23 +378,26 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void domanda(Nemico nemico) {
-        if (!rispostePuls.isEmpty()) {
-            rispostePuls.clear();
+        if (statPanel.isVisible()) {
+            statPanel.setVisible(false);
         }
+        papa.mov = false;
+            if (!rispostePuls.isEmpty()) {
+                rispostePuls.clear();
+            }
 
-        for (int i = 0; i < nemico.pulsanti.size(); i++) {
-            rispostePuls.add(nemico.pulsanti.get(i));
-            rispostePuls.get(i).setBounds(110 * i + 500, 50, 100, 50);
-            domandaBG.add(rispostePuls.get(i));
-        }
-
-        if (papa.livello >= 1 && papa.livello <= 5) {
+            for (int i = 0; i < nemico.pulsanti.size(); i++) {
+                rispostePuls.add(nemico.pulsanti.get(i));
+                rispostePuls.get(i).setBounds(110 * i + 500, 120, 80, 50);
+                domandaBG.add(rispostePuls.get(i));
+            }
+            domandaText.setFont(new Font("Engravers MT", Font.PLAIN, 20));
+            domandaText.setHorizontalAlignment(JLabel.CENTER);
             domandaText.setText(nemico.domanda);
-        }
-        domandaBG.add(domandaText);
-        domandaBG.setVisible(true);
 
-        this.add(domandaBG);
+            domandaBG.add(domandaText);
+            domandaBG.setVisible(true);
+
+            this.add(domandaBG);
     }
-
 }

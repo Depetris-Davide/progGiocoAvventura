@@ -1,2 +1,2 @@
-Quanto fa 14-7+2?®9|6®true|false|false®11®7
-Quanto fa 14-7+3?®9|10|11®false|true|false®12®7
+Quanto fa 14-7+2?#9|6|12#true|false|false#11#7
+Quanto fa 14-7+3?#9|10|11#false|true|false#12#7

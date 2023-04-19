@@ -1,0 +1,2 @@
+Se divido 1000 per tre che resto avrò?#0|1|2#false|true|false#3#6
+Quanti tasti ha il pianoforte?#15|88|120#false|true|false#9#8

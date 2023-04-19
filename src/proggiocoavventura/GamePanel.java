@@ -351,6 +351,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                     nemici.add(new Nemico(domanda, risposteTemp, risposteCTemp, posX, posY, domandaBG, papa));
                     risposteTemp.clear();
+                    risposteCTemp.clear();
                 }
             } while (s != null);
             fileinNemico.close();

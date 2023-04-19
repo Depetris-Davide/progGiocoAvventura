@@ -14,6 +14,7 @@ public class Nemico extends JLabel {
     int size;
     String domanda;
     ArrayList<JButton> pulsanti;
+    ArrayList <Boolean> risposteCo;
     boolean dead;
 
     //ImageIcon player;
@@ -22,6 +23,10 @@ public class Nemico extends JLabel {
         this.posX = posX;
         this.posY = posY;
         this.domanda = domanda;
+        risposteCo = new ArrayList<Boolean>();
+        for(Boolean rispostaC : risposteC) {
+            risposteCo.add(rispostaC);
+        }
         int i = 0;
         for (String risposta : risposte) {
             pulsanti.add(new JButton(risposta));
@@ -30,7 +35,7 @@ public class Nemico extends JLabel {
             pulsanti.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (risposteC.get(k)) {
+                    if (risposteCo.get(k)) {
                         System.out.println("RISPOSTA GIUSTA UWUWUWU");
                         pannello.removeAll();
                         dead = true;

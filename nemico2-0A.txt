@@ -1,0 +1,2 @@
+Secondo voi quante volte si ripete il numero 9 contando dal 1 al 99?®1|3|20®false|false|true®23®5
+Su quante isole sorge Venezia?®62|94|118®false|false|true®9®6
